@@ -6,6 +6,8 @@ function App() {
   return (
     <>
       {/* Hero */}
+      <Hero />
+      <h1>hello</h1>
     </>
   );
 }
