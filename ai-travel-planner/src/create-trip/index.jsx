@@ -8,20 +8,31 @@ import { Button } from "@/components/ui/button.jsx";
 function CreateTrip() {
   const [searchTerm, setSearchTerm] = useState("");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [selectedOption, setSelectedOption] = useState("");
+  const [formData, setFormData] = useState({}); // Correctly initialize formData using useState
   const dropdownRef = useRef(null); // Create a ref for the dropdown
 
+  // Handle input change for destination search
   const handleInputChange = (e) => {
     setSearchTerm(e.target.value);
     setIsDropdownOpen(true);
   };
 
-  const handleOptionClick = (option) => {
-    setSelectedOption(option);
-    setSearchTerm(option); // Update the input field with the selected option
-    setIsDropdownOpen(false);
-    console.log(`Selected city: ${option}`); // Print the selected city to the console
+  // Handle option selection and update form data
+  const handleOptionClick = (name, option) => {
+    setFormData({
+      ...formData,
+      [name]: option, // Update only the relevant field in formData
+    });
+    if (name === "destination") {
+      setSearchTerm(option); // Set the search term only for destination
+      setIsDropdownOpen(false); // Close dropdown for destination
+    }
+    console.log(`Updated formData:`, formData);
   };
+
+  useEffect(() => {
+    console.log(formData);
+  }, [formData]);
 
   const handleClickOutside = (e) => {
     if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
@@ -44,7 +55,6 @@ function CreateTrip() {
   // Function to clear the input field and reset the dropdown
   const handleClearInput = () => {
     setSearchTerm("");
-    setSelectedOption("");
     setIsDropdownOpen(false);
   };
 
@@ -59,6 +69,7 @@ function CreateTrip() {
       </p>
 
       <div className="mt-10 flex flex-col gap-10">
+        {/* Destination Selection */}
         <div>
           <h2 className="text-l my-3 font-medium">
             What is your destination of choice?
@@ -66,7 +77,7 @@ function CreateTrip() {
           <div className="relative" ref={dropdownRef}>
             <input
               type="text"
-              className="w-full border border-gray-300 rounded-md p-3 text-lg bg-white text-black focus:outline-none focus:ring-2 focus:ring-blue-500 h-15"
+              className="w-full border border-gray-300 rounded-md p-3 text-lg bg-white text-black focus:outline-none focus:ring-2 focus:ring-gray-500 h-15"
               placeholder="Start typing a destination..."
               value={searchTerm}
               onChange={handleInputChange}
@@ -86,7 +97,9 @@ function CreateTrip() {
                   filteredDestinations.map((destination, index) => (
                     <li
                       key={index}
-                      onClick={() => handleOptionClick(destination)}
+                      onClick={() =>
+                        handleOptionClick("destination", destination)
+                      }
                       className="p-3 cursor-pointer hover:bg-gray-100"
                     >
                       {destination}
@@ -99,6 +112,8 @@ function CreateTrip() {
             )}
           </div>
         </div>
+
+        {/* Number of Days */}
         <div>
           <h2 className="text-l my-3 font-medium">
             How many days are you planning your trip?
@@ -109,15 +124,25 @@ function CreateTrip() {
             min="1"
             max="365"
             className="w-full border-opacity-25 border-gray-500 rounded-md p-3 text-lg h-15 placeholder-opacity-20"
+            onChange={(e) => handleOptionClick("noOfDays", e.target.value)} // Update noOfDays in formData
           />
         </div>
+
+        {/* Budget Selection */}
         <div>
           <h2 className="text-l my-3 font-medium">What is your budget?</h2>
           <div className="grid lg:grid-cols-3 grid-cols-1 gap-5 mt-5">
             {SelectBudgetOptions.map((item, index) => (
               <div
                 key={index}
-                className="flex items-center mb-4 p-4 border rounded-lg hover:shadow-lg cursor-pointer"
+                onClick={() => handleOptionClick("budget", item.title)}
+                className={`flex items-center mb-4 p-4 border rounded-lg hover:shadow-lg cursor-pointer
+                  ${
+                    formData.budget === item.title
+                      ? "bg-gray-100 border-gray-500" // Highlight selected item
+                      : ""
+                  }
+                `}
               >
                 {/* Render the icon properly using FontAwesomeIcon */}
                 <FontAwesomeIcon icon={item.icon} className="mr-2 text-4xl" />
@@ -129,6 +154,8 @@ function CreateTrip() {
             ))}
           </div>
         </div>
+
+        {/* Travelers Selection */}
         <div>
           <h2 className="text-l my-3 font-medium">
             Who do you plan on traveling with on your next adventure?
@@ -137,7 +164,14 @@ function CreateTrip() {
             {SelectTravelList.map((item, index) => (
               <div
                 key={index}
-                className="flex items-center mb-4 p-4 border rounded-lg hover:shadow-lg cursor-pointer"
+                onClick={() => handleOptionClick("traveller", item.people)}
+                className={`flex items-center mb-4 p-4 border rounded-lg hover:shadow-lg cursor-pointer
+                  ${
+                    formData.traveller === item.people
+                      ? "bg-gray-100 border-gray-500" // Highlight selected item
+                      : ""
+                  }
+                `}
               >
                 {/* Render the icon properly using FontAwesomeIcon */}
                 <FontAwesomeIcon icon={item.icon} className="mr-2 text-4xl" />
@@ -149,6 +183,8 @@ function CreateTrip() {
             ))}
           </div>
         </div>
+
+        {/* Submit Button */}
         <div className="my-10 justify-end flex">
           <Button>Generate Trip</Button>
         </div>
