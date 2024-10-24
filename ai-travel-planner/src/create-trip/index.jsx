@@ -9,6 +9,7 @@ function CreateTrip() {
   const [searchTerm, setSearchTerm] = useState("");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [formData, setFormData] = useState({}); // Correctly initialize formData using useState
+  const [errorMessage, setErrorMessage] = useState(""); // New state for error message
   const dropdownRef = useRef(null); // Create a ref for the dropdown
 
   // Handle input change for destination search
@@ -56,6 +57,18 @@ function CreateTrip() {
   const handleClearInput = () => {
     setSearchTerm("");
     setIsDropdownOpen(false);
+  };
+
+  // Generate trip and handle validation
+  const OnGenerateTrip = () => {
+    if (formData?.noOfDays > 5) {
+      setErrorMessage("You cannot enter more than 5 days for this trip.");
+      return;
+    } else {
+      setErrorMessage(""); // Clear the error if valid
+      // Proceed with trip generation logic here
+      console.log("Generating trip...");
+    }
   };
 
   return (
@@ -126,6 +139,9 @@ function CreateTrip() {
             className="w-full border-opacity-25 border-gray-500 rounded-md p-3 text-lg h-15 placeholder-opacity-20"
             onChange={(e) => handleOptionClick("noOfDays", e.target.value)} // Update noOfDays in formData
           />
+          {errorMessage && (
+            <p className="text-red-500 mt-2">{errorMessage}</p> // Render error message below input in red
+          )}
         </div>
 
         {/* Budget Selection */}
@@ -139,7 +155,7 @@ function CreateTrip() {
                 className={`flex items-center mb-4 p-4 border rounded-lg hover:shadow-lg cursor-pointer
                   ${
                     formData.budget === item.title
-                      ? "bg-gray-100 border-gray-500" // Highlight selected item
+                      ? "bg-gray-100 border-gray-500 shadow-lg" // Highlight selected item
                       : ""
                   }
                 `}
@@ -168,7 +184,7 @@ function CreateTrip() {
                 className={`flex items-center mb-4 p-4 border rounded-lg hover:shadow-lg cursor-pointer
                   ${
                     formData.traveller === item.people
-                      ? "bg-gray-100 border-gray-500" // Highlight selected item
+                      ? "bg-gray-100 border-gray-500 shadow-lg" // Highlight selected item
                       : ""
                   }
                 `}
@@ -186,7 +202,7 @@ function CreateTrip() {
 
         {/* Submit Button */}
         <div className="my-10 justify-end flex">
-          <Button>Generate Trip</Button>
+          <Button onClick={OnGenerateTrip}>Generate Trip</Button>
         </div>
       </div>
     </div>
