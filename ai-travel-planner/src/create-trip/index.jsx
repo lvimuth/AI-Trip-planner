@@ -9,7 +9,10 @@ function CreateTrip() {
   const [searchTerm, setSearchTerm] = useState("");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [formData, setFormData] = useState({}); // Correctly initialize formData using useState
-  const [errorMessage, setErrorMessage] = useState(""); // New state for error message
+  const [daysErrorMessage, setDaysErrorMessage] = useState("");
+  const [destinationErrorMessage, setDestinationErrorMessage] = useState("");
+  const [budgetErrorMessage, setBudgetErrorMessage] = useState("");
+  const [travellersErrorMessage, setTravellersErrorMessage] = useState(""); // New state for error message
   const dropdownRef = useRef(null); // Create a ref for the dropdown
 
   // Handle input change for destination search
@@ -62,10 +65,41 @@ function CreateTrip() {
   // Generate trip and handle validation
   const OnGenerateTrip = () => {
     if (formData?.noOfDays > 5) {
-      setErrorMessage("You cannot enter more than 5 days for this trip.");
+      setDaysErrorMessage("You cannot enter more than 5 days for this trip.");
+      setBudgetErrorMessage("");
+      setDestinationErrorMessage("");
+      setTravellersErrorMessage("");
+      return;
+    } else if (!formData?.destination) {
+      setDestinationErrorMessage("Please select a destination.");
+      setDaysErrorMessage("");
+      setBudgetErrorMessage("");
+      setTravellersErrorMessage("");
+      return;
+    } else if (!formData?.noOfDays) {
+      setDaysErrorMessage("Please enter the number of days for this trip.");
+      setBudgetErrorMessage("");
+      setDestinationErrorMessage("");
+      setTravellersErrorMessage("");
+      return;
+    } else if (!formData?.budget) {
+      setBudgetErrorMessage("Please select a budget.");
+      setDaysErrorMessage("");
+      setDestinationErrorMessage("");
+      setTravellersErrorMessage("");
+      return;
+    } else if (!formData?.traveller) {
+      setTravellersErrorMessage("Please select the number of travellers.");
+      setDaysErrorMessage("");
+      setBudgetErrorMessage("");
+      setDestinationErrorMessage("");
       return;
     } else {
-      setErrorMessage(""); // Clear the error if valid
+      setDaysErrorMessage("");
+      setBudgetErrorMessage("");
+      setDestinationErrorMessage("");
+      setTravellersErrorMessage("");
+      // Clear the error if valid
       // Proceed with trip generation logic here
       console.log("Generating trip...");
     }
@@ -124,6 +158,9 @@ function CreateTrip() {
               </ul>
             )}
           </div>
+          {destinationErrorMessage && (
+            <p className="text-red-500 mt-2">{destinationErrorMessage}</p> // Render error message below input in red
+          )}
         </div>
 
         {/* Number of Days */}
@@ -139,8 +176,8 @@ function CreateTrip() {
             className="w-full border-opacity-25 border-gray-500 rounded-md p-3 text-lg h-15 placeholder-opacity-20"
             onChange={(e) => handleOptionClick("noOfDays", e.target.value)} // Update noOfDays in formData
           />
-          {errorMessage && (
-            <p className="text-red-500 mt-2">{errorMessage}</p> // Render error message below input in red
+          {daysErrorMessage && (
+            <p className="text-red-500 mt-2">{daysErrorMessage}</p> // Render error message below input in red
           )}
         </div>
 
@@ -169,6 +206,9 @@ function CreateTrip() {
               </div>
             ))}
           </div>
+          {budgetErrorMessage && (
+            <p className="text-red-500 mt-2">{budgetErrorMessage}</p> // Render error message below input in red
+          )}
         </div>
 
         {/* Travelers Selection */}
@@ -198,6 +238,9 @@ function CreateTrip() {
               </div>
             ))}
           </div>
+          {travellersErrorMessage && (
+            <p className="text-red-500 mt-2">{travellersErrorMessage}</p> // Render error message below input in red
+          )}
         </div>
 
         {/* Submit Button */}
