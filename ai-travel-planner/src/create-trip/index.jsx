@@ -20,6 +20,9 @@ import {
 import { FcGoogle } from "react-icons/fc";
 import { useGoogleLogin } from "@react-oauth/google";
 import axios from "axios";
+import { doc, setDoc } from "firebase/firestore";
+import { db } from "@/service/firebaseConfig.jsx";
+import { AiOutlineLoading3Quarters } from "react-icons/ai";
 
 function CreateTrip() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -31,6 +34,7 @@ function CreateTrip() {
   const [travellersErrorMessage, setTravellersErrorMessage] = useState(""); // New state for error message
   const dropdownRef = useRef(null); // Create a ref for the dropdown
   const [openDialog, setOpenDialog] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   // Handle input change for destination search
   const handleInputChange = (e) => {
@@ -95,9 +99,27 @@ function CreateTrip() {
           },
         }
       )
-      .then((response) => console.log(response));
+      .then((response) => {
+        console.log(response);
+        localStorage.setItem("user", JSON.stringify(response.data));
+        setOpenDialog(false);
+        OnGenerateTrip();
+      });
   };
 
+  const saveAITrip = async (tripData) => {
+    setLoading(true);
+    const docID = Date.now().toString();
+    const user = JSON.parse(localStorage.getItem("user"));
+
+    await setDoc(doc(db, "AITrips", docID), {
+      userSelection: formData,
+      tripData: tripData,
+      userEmail: user.email,
+      id: docID,
+    });
+    setLoading(false);
+  };
   // Generate trip and handle validation
   const OnGenerateTrip = async () => {
     if (formData?.noOfDays > 5) {
@@ -150,7 +172,7 @@ function CreateTrip() {
       setOpenDialog(true);
       return;
     }
-
+    setLoading(true);
     const finalPrompt = AI_PROMPT.replace("{destination}", formData.destination)
       .replace("{noOfDays}", formData.noOfDays)
       .replace("{budget}", formData.budget)
@@ -159,6 +181,8 @@ function CreateTrip() {
 
     const result = await chatSession.sendMessage(finalPrompt);
     console.log(result?.response?.text());
+    setLoading(false);
+    saveAITrip(result?.response?.text());
   };
 
   return (
@@ -301,7 +325,13 @@ function CreateTrip() {
 
         {/* Submit Button */}
         <div className="my-10 justify-end flex">
-          <Button onClick={OnGenerateTrip}>Generate Trip</Button>
+          <Button disabled={loading} onClick={OnGenerateTrip}>
+            {loading ? (
+              <AiOutlineLoading3Quarters className="h-7 w-7 animate-spin" />
+            ) : (
+              "Generate Trip"
+            )}
+          </Button>
         </div>
         <Dialog open={openDialog}>
           <DialogContent>
