@@ -10,6 +10,16 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"; // Import Font
 import { Button } from "@/components/ui/button.jsx";
 import { toast } from "sonner";
 import { chatSession } from "@/service/AIModel.jsx";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { FcGoogle } from "react-icons/fc";
+import { useGoogleLogin } from "@react-oauth/google";
+import axios from "axios";
 
 function CreateTrip() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -20,6 +30,7 @@ function CreateTrip() {
   const [budgetErrorMessage, setBudgetErrorMessage] = useState("");
   const [travellersErrorMessage, setTravellersErrorMessage] = useState(""); // New state for error message
   const dropdownRef = useRef(null); // Create a ref for the dropdown
+  const [openDialog, setOpenDialog] = useState(false);
 
   // Handle input change for destination search
   const handleInputChange = (e) => {
@@ -68,6 +79,25 @@ function CreateTrip() {
     setIsDropdownOpen(false);
   };
 
+  const googleLogin = useGoogleLogin({
+    onSuccess: (codeResp) => GetUserProfile(codeResp),
+    onError: (err) => console.log(err),
+  });
+
+  const GetUserProfile = (tokenInfo) => {
+    axios
+      .get(
+        `https://www.googleapis.com/oauth2/v1/userinfo?access_token=${tokenInfo?.access_token}`,
+        {
+          headers: {
+            Authorization: `Bearer ${tokenInfo?.access_token}`,
+            Accept: "application/json",
+          },
+        }
+      )
+      .then((response) => console.log(response));
+  };
+
   // Generate trip and handle validation
   const OnGenerateTrip = async () => {
     if (formData?.noOfDays > 5) {
@@ -114,6 +144,13 @@ function CreateTrip() {
       // Proceed with trip generation logic here
       console.log("Generating trip...");
     }
+
+    const user = localStorage.getItem("user");
+    if (!user) {
+      setOpenDialog(true);
+      return;
+    }
+
     const finalPrompt = AI_PROMPT.replace("{destination}", formData.destination)
       .replace("{noOfDays}", formData.noOfDays)
       .replace("{budget}", formData.budget)
@@ -266,6 +303,25 @@ function CreateTrip() {
         <div className="my-10 justify-end flex">
           <Button onClick={OnGenerateTrip}>Generate Trip</Button>
         </div>
+        <Dialog open={openDialog}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogDescription>
+                <DialogTitle>SignIn</DialogTitle>
+                <img src="/logo.svg" alt="" />
+                <h2 className="font-bold text-lg mt-7">SignIn with Google</h2>
+                <p>SignIn with Google Authentication to the app securely</p>
+                <Button
+                  onClick={googleLogin}
+                  className="w-full mt-5 flex gap-4 items-center"
+                >
+                  <FcGoogle className="h-9 w-9" />
+                  SignIn With Google
+                </Button>
+              </DialogDescription>
+            </DialogHeader>
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   );
