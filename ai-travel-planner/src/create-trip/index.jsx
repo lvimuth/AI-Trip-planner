@@ -1,10 +1,15 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Input } from "@/components/ui/input.jsx";
 import destinations from "../constants/countries.jsx"; // Import destinations array
-import { SelectBudgetOptions, SelectTravelList } from "@/constants/options.jsx";
+import {
+  AI_PROMPT,
+  SelectBudgetOptions,
+  SelectTravelList,
+} from "@/constants/options.jsx";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"; // Import FontAwesome component
 import { Button } from "@/components/ui/button.jsx";
 import { toast } from "sonner";
+import { chatSession } from "@/service/AIModel.jsx";
 
 function CreateTrip() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -64,17 +69,17 @@ function CreateTrip() {
   };
 
   // Generate trip and handle validation
-  const OnGenerateTrip = () => {
+  const OnGenerateTrip = async () => {
     if (formData?.noOfDays > 5) {
       setDaysErrorMessage("You cannot enter more than 5 days for this trip.");
-      toast("You cannot enter more than 5 days for this trip..")
+      toast("You cannot enter more than 5 days for this trip..");
       setBudgetErrorMessage("");
       setDestinationErrorMessage("");
       setTravellersErrorMessage("");
       return;
     } else if (!formData?.destination) {
       setDestinationErrorMessage("Please select a destination.");
-      toast("Please select a destination")
+      toast("Please select a destination");
       setDaysErrorMessage("");
       setBudgetErrorMessage("");
       setTravellersErrorMessage("");
@@ -88,14 +93,14 @@ function CreateTrip() {
       return;
     } else if (!formData?.budget) {
       setBudgetErrorMessage("Please select a budget.");
-      toast("Please select a budget.")
+      toast("Please select a budget.");
       setDaysErrorMessage("");
       setDestinationErrorMessage("");
       setTravellersErrorMessage("");
       return;
     } else if (!formData?.traveller) {
       setTravellersErrorMessage("Please select the number of travellers.");
-      toast("Please select the number of travellers.")
+      toast("Please select the number of travellers.");
       setDaysErrorMessage("");
       setBudgetErrorMessage("");
       setDestinationErrorMessage("");
@@ -109,6 +114,14 @@ function CreateTrip() {
       // Proceed with trip generation logic here
       console.log("Generating trip...");
     }
+    const finalPrompt = AI_PROMPT.replace("{destination}", formData.destination)
+      .replace("{noOfDays}", formData.noOfDays)
+      .replace("{budget}", formData.budget)
+      .replace("{traveller}", formData.traveller)
+      .replace("{noOfDays}", formData.noOfDays);
+
+    const result = await chatSession.sendMessage(finalPrompt);
+    console.log(result?.response?.text());
   };
 
   return (

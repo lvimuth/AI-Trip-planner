@@ -16,7 +16,7 @@ export const SelectTravelList = [
     title: "Just Me",
     desc: "A sole traveler in exploration",
     icon: faUser, // Reference to the icon
-    people: "1",
+    people: "1 person",
   },
   {
     id: 2,
@@ -62,4 +62,5 @@ export const SelectBudgetOptions = [
   },
 ];
 
-export const AI_PROMPT = "Generate travel plan for location: {location}";
+export const AI_PROMPT =
+  "Generate travel plan for {destination}, for {noOfDays} days for {traveller} with a {budget} budget. Give me a hotel options list with for each day with Hotel Name, Hotel Address, Price, Hotel image URL, geo coordinates, rating, description and suggest itinery with place name, place details, place image URL, GEO coordinates, ticket pricing, rating,time travel each of the location for {noOfDays} with each day plan with best time to visit in JSON format";
