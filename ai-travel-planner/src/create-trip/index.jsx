@@ -23,6 +23,7 @@ import axios from "axios";
 import { doc, setDoc } from "firebase/firestore";
 import { db } from "@/service/firebaseConfig.jsx";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
+import { useNavigate } from "react-router-dom";
 
 function CreateTrip() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -35,6 +36,7 @@ function CreateTrip() {
   const dropdownRef = useRef(null); // Create a ref for the dropdown
   const [openDialog, setOpenDialog] = useState(false);
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   // Handle input change for destination search
   const handleInputChange = (e) => {
@@ -114,11 +116,12 @@ function CreateTrip() {
 
     await setDoc(doc(db, "AITrips", docID), {
       userSelection: formData,
-      tripData: tripData,
+      tripData: JSON.parse(tripData),
       userEmail: user.email,
       id: docID,
     });
     setLoading(false);
+    navigate("/view-trip/" + docID);
   };
   // Generate trip and handle validation
   const OnGenerateTrip = async () => {
