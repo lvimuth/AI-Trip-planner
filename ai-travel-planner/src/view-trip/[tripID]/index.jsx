@@ -5,6 +5,7 @@ import { useParams } from "react-router-dom";
 import { toast } from "sonner";
 import InfomationSection from "../components/InfomationSection";
 import HotelOptions from "../components/HotelOptions";
+import PlacesToVisit from "../components/PlacesToVisit";
 
 function ViewTrip() {
   const { tripID } = useParams();
@@ -31,9 +32,10 @@ function ViewTrip() {
     <div className="p-10 md:px-20 lg:px-44 xl:px-56">
       {/* Information Section */}
       <InfomationSection trip={trip} />
-          {/* Recommended Hotels */}
-          <HotelOptions trip={trip}/>
+      {/* Recommended Hotels */}
+      <HotelOptions trip={trip} />
       {/* Itinerary */}
+      <PlacesToVisit trip={trip} />
     </div>
   );
 }
