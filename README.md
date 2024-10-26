@@ -1,6 +1,8 @@
 
 # AI Trip Planner
 
+![AI Trip Planner Screenshot](Screenshot 2024-10-27 at 00-56-40 Vite React.png)
+
 **AI Trip Planner** is a Vue.js-based web application that provides personalized travel planning through AI-generated itineraries, hotel recommendations, and destination insights.
 
 ## Features
