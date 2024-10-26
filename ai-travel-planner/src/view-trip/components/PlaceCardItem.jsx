@@ -1,28 +1,27 @@
-
-import React from "react";
-
+import { GetPlaceDetails, PHOTO_REF_URL } from "@/service/GlobalAPI";
+import React, { useEffect, useState } from "react";
 
 function PlaceCardItem({ placeDetails }) {
-  {
-    console.log(placeDetails);
-  }
+  const [photoURL, setPhotoURL] = useState();
+  useEffect(() => {
+    GetPlacePhoto();
+  }, [placeDetails.place]);
+  const GetPlacePhoto = async () => {
+    const data = {
+      textQuery: placeDetails.place,
+    };
+    const result = await GetPlaceDetails(data).then((resp) => {
+      console.log(resp.data.places[0].photos[3].name);
+      const photoURL = PHOTO_REF_URL.replace(
+        "{NAME}",
+        resp.data.places[0].photos[3].name
+      );
+      setPhotoURL(photoURL);
+    });
+  };
   return (
     <div className="flex flex-col items-center justify-center">
-      <img
-        src="/placeholder.png"
-        alt=""
-        className="w-[130px] h-[130px] rounded-xl"
-      />
-
-      {/* Optional: Display image if available */}
-      {/* {placeDetails.image_url && (
-                          <img
-                            src={placeDetails.image_url}
-                            alt={placeDetails.place}
-                            className="mt-2 w-full max-w-md object-cover rounded-lg"
-                          />
-                        )} */}
-      
+      <img src={photoURL?photoURL:'/placeholder.jpg'} alt="" className="w-[130px] h-[130px] rounded-xl" />
     </div>
   );
 }
