@@ -1,33 +1,90 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { Swiper, SwiperSlide } from "swiper/react";
+import "swiper/swiper-bundle.css";
 
 function HotelOptions({ trip }) {
+  const hotels = trip?.tripData?.hotel_options || [];
   return (
     <div>
       <h2 className="font-bold text-xl mt-5">Hotel Recommendation</h2>
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
-        {console.log(trip?.tripData?.hotel_options)}
-        {trip?.tripData?.hotel_options?.map((hotel, index) => (
-          <Link
-            to={
-              "https://www.google.com/maps/search/?api=1&query=" +
-              hotel.name +
-              "," +
-              hotel?.address
-            }
-            target="_blank"
+      <div className="w-full p-4">
+        {hotels.length > 4 ? (
+          // Display as slider if more than 4 hotels
+          <Swiper
+            spaceBetween={20}
+            slidesPerView={1}
+            breakpoints={{
+              640: { slidesPerView: 2 },
+              768: { slidesPerView: 3 },
+              1024: { slidesPerView: 4 },
+            }}
           >
-            <div className="hover:scale-105 transition-all cursor-pointer">
-              <img src="/placeholder.png" alt="" className="rounded-xl" />
-              <div className="my-2 flex flex-col gap-1">
-                <h2 className="font-md">{hotel.name}</h2>
-                <h2 className="text-xs text-gray-500">🗺️ {hotel.address}</h2>
-                <h2 className="text-sm">💵 {hotel.price}</h2>
-                <h2 className="text-sm">⭐ {hotel.rating}</h2>
-              </div>
-            </div>
-          </Link>
-        ))}
+            {hotels.map((hotel, index) => (
+              <SwiperSlide key={index}>
+                <Link
+                  to={
+                    "https://www.google.com/maps/search/?api=1&query=" +
+                    hotel.name +
+                    "," +
+                    hotel?.address
+                  }
+                  target="_blank"
+                >
+                  <div className="hover:scale-105 transition-all cursor-pointer">
+                    <img src="/placeholder.png" alt="" className="rounded-xl" />
+                    <div className="my-2 flex flex-col gap-1">
+                      <h2 className="font-md">{hotel.name}</h2>
+                      <h2 className="text-xs text-gray-500">
+                        🗺️ {hotel.address}
+                      </h2>
+                      <h2 className="text-sm">💵 {hotel.price}</h2>
+                      <h2 className="text-sm">⭐ {hotel.rating}</h2>
+                    </div>
+                  </div>
+                </Link>
+              </SwiperSlide>
+            ))}
+          </Swiper>
+        ) : (
+          // Display as grid if 4 or fewer hotels
+          <div
+            className={`grid gap-5 ${
+              hotels.length === 1
+                ? "grid-cols-1 justify-center"
+                : hotels.length === 2
+                ? "grid-cols-2"
+                : hotels.length === 3
+                ? "grid-cols-3"
+                : "grid-cols-4"
+            }`}
+          >
+            {hotels.map((hotel, index) => (
+              <Link
+                key={index}
+                to={
+                  "https://www.google.com/maps/search/?api=1&query=" +
+                  hotel.name +
+                  "," +
+                  hotel?.address
+                }
+                target="_blank"
+              >
+                <div className="hover:scale-105 transition-all cursor-pointer">
+                  <img src="/placeholder.png" alt="" className="rounded-xl" />
+                  <div className="my-2 flex flex-col gap-1">
+                    <h2 className="font-md">{hotel.name}</h2>
+                    <h2 className="text-xs text-gray-500">
+                      🗺️ {hotel.address}
+                    </h2>
+                    <h2 className="text-sm">💵 {hotel.price}</h2>
+                    <h2 className="text-sm">⭐ {hotel.rating}</h2>
+                  </div>
+                </div>
+              </Link>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

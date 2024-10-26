@@ -29,7 +29,7 @@ function PlacesToVisit({ trip }) {
                         (
                           <div
                             key={timeOfDay}
-                            className="ml-4 mt-3 p-3 shadow-lg border rounded-xl hover:scale-105 transition-all"
+                            className="ml-4 mt-3 p-3 shadow-lg border rounded-xl hover:scale-105 transition-all cursor-pointer"
                           >
                             <div className="flex ">
                               <div className="w-3/4">
