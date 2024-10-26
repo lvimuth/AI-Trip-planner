@@ -3,8 +3,6 @@ import { GetPlaceDetails, PHOTO_REF_URL } from "@/service/GlobalAPI";
 import React, { useEffect, useState } from "react";
 import { FaShare } from "react-icons/fa";
 
-
-
 function InfomationSection({ trip }) {
   const [photoURL, setPhotoURL] = useState();
   useEffect(() => {
@@ -26,7 +24,7 @@ function InfomationSection({ trip }) {
   return (
     <div>
       <img
-        src={photoURL}
+        src={photoURL ? photoURL : "/placeholder.png"}
         alt=""
         className="h-[340px] w-full object-cover rounded-xl"
       />

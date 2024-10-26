@@ -51,7 +51,7 @@ function HotelCardItem({ hotels }) {
                   <img
                     src={photoURLs[hotel.name] || "/placeholder.png"}
                     alt=""
-                    className="rounded-xl"
+                    className="w-full h-48 object-cover rounded-xl"
                   />
                   <div className="my-2 flex flex-col gap-1">
                     <h2 className="font-md">{hotel.name}</h2>

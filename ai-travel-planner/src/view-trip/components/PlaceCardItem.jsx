@@ -21,7 +21,11 @@ function PlaceCardItem({ placeDetails }) {
   };
   return (
     <div className="flex flex-col items-center justify-center">
-      <img src={photoURL?photoURL:'/placeholder.jpg'} alt="" className="w-[130px] h-[130px] rounded-xl" />
+      <img
+        src={photoURL ? photoURL : "/placeholder.png"}
+        alt=""
+        className="w-[130px] h-[130px] rounded-xl object-cover"
+      />
     </div>
   );
 }
