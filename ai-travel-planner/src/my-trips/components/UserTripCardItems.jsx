@@ -24,7 +24,7 @@ function UserTripCardItems({ trip }) {
       <div className="hover:scale-105 transition-all">
         <img
           src={photoURL ? photoURL : "/placeholder.png"}
-          className="object-cover rounded-xl w-full h-20"
+          className="object-cover rounded-xl w-full h-[250px]"
         />
         <div>
           <h2 className="font-bold text-lg">
