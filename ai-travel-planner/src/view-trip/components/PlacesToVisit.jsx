@@ -23,60 +23,53 @@ function PlacesToVisit({ trip }) {
                       const order = ["morning", "afternoon", "evening"];
                       return order.indexOf(a[0]) - order.indexOf(b[0]);
                     })
-                    .map(
-                      ([timeOfDay, placeDetails]) => (
-                        console.log(placeDetails),
-                        (
-                          <div
-                            key={timeOfDay}
-                            className="ml-4 mt-3 p-3 shadow-lg border rounded-xl hover:scale-105 transition-all cursor-pointer"
-                          >
-                            <div className="flex ">
-                              <div className="w-3/4">
-                                <h4 className="font-semibold capitalize">
-                                  {timeOfDay}
-                                </h4>
-                                <p className="text-orange-600 italic">
-                                  {placeDetails.time}
-                                </p>
-                              </div>
-                              <Link
-                                className="w-1/4 flex justify-center items-center"
-                                to={
-                                  "https://www.google.com/maps/search/?api=1&query=" +
-                                  placeDetails.place
-                                }
-                                target="_blank"
-                              >
-                                <Button size="sm">
-                                  <FaMapLocationDot />
-                                </Button>
-                              </Link>
-                            </div>
-                            <div className="flex md:flex-row flex-col">
-                              <div className="w-full md:w-3/4 p-2">
-                                <p className="font-bold">
-                                  {placeDetails.place}
-                                </p>
-                                <p className="text-gray-700">
-                                  {placeDetails.details}
-                                </p>
-                                <p className="text-gray-500 text-justify md:text-left">
-                                  Rating: {placeDetails.rating} ⭐
-                                </p>
-                                <p className="text-gray-500">
-                                  Ticket: {placeDetails.ticket_pricing}
-                                </p>
-                              </div>
-
-                              <div className="w-full md:w-1/4 p-2 flex justify-center items-center h-full">
-                                <PlaceCardItem placeDetails={placeDetails} />
-                              </div>
-                            </div>
+                    .map(([timeOfDay, placeDetails]) => (
+                      <div
+                        key={timeOfDay}
+                        className="ml-4 mt-3 p-3 shadow-lg border rounded-xl hover:scale-105 transition-all cursor-pointer"
+                      >
+                        <div className="flex ">
+                          <div className="w-3/4">
+                            <h4 className="font-semibold capitalize">
+                              {timeOfDay}
+                            </h4>
+                            <p className="text-orange-600 italic">
+                              {placeDetails.time}
+                            </p>
                           </div>
-                        )
-                      )
-                    )}
+                          <Link
+                            className="w-1/4 flex justify-center items-center"
+                            to={
+                              "https://www.google.com/maps/search/?api=1&query=" +
+                              placeDetails.place
+                            }
+                            target="_blank"
+                          >
+                            <Button size="sm">
+                              <FaMapLocationDot />
+                            </Button>
+                          </Link>
+                        </div>
+                        <div className="flex md:flex-row flex-col">
+                          <div className="w-full md:w-3/4 p-2">
+                            <p className="font-bold">{placeDetails.place}</p>
+                            <p className="text-gray-700">
+                              {placeDetails.details}
+                            </p>
+                            <p className="text-gray-500 text-justify md:text-left">
+                              Rating: {placeDetails.rating} ⭐
+                            </p>
+                            <p className="text-gray-500">
+                              Ticket: {placeDetails.ticket_pricing}
+                            </p>
+                          </div>
+
+                          <div className="w-full md:w-1/4 p-2 flex justify-center items-center h-full">
+                            <PlaceCardItem placeDetails={placeDetails} />
+                          </div>
+                        </div>
+                      </div>
+                    ))}
                 </div>
               );
             }
